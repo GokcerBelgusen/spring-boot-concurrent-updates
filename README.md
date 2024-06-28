@@ -1,7 +1,8 @@
 #
-# Simple Spring Boot Application running Optimistic & Pessimistic Locks on PosgreSQL - having read committed isolation level + row level lock
+#  Optimistic & Pessimistic Locks example 
 #
 
+Spring boot application with postgresql having read committed isolation level + row level lock
 
 # To install and start postgreSQL by homebrew
 
