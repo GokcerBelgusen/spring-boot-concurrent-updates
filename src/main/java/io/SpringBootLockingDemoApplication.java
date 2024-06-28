@@ -1,5 +1,6 @@
 package io;
 
+import io.service.CreditUpdateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -8,8 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import io.service.CreditUpdateService;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -23,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SpringBootLockingDemoApplication implements CommandLineRunner {
 
+    static boolean  debug = false;
     @Autowired
     private CreditUpdateService creditUpdateService;
 
@@ -40,7 +40,6 @@ public class SpringBootLockingDemoApplication implements CommandLineRunner {
         if (random.nextBoolean()) {
             amount = -amount;
         }
-
         return amount;
     }
 
@@ -48,29 +47,29 @@ public class SpringBootLockingDemoApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
 
+        if (debug) {
+            int threadCount = 10; // Number of concurrent threads
+            ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 
-        int threadCount = 10; // Number of concurrent threads
-        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+            for (int i = 0; i < threadCount; i++) {
+                Long customerId = (long) (Math.random() < 0.5 ? 1L : 2L);
+                // Generate a random number between 5 and 100, multiples of 5, that can be positive or negative
+                double amount = generateRandomAmount();
 
-        for (int i = 0; i < threadCount; i++) {
-            Long customerId = (long) (Math.random() < 0.5 ? 1L : 2L);
-            // Generate a random number between 5 and 100, multiples of 5, that can be positive or negative
-            double amount = generateRandomAmount();
+                log.info("Sending request for customer " + customerId + " transaction amnt " + amount);
 
-            log.info("Sending request for customer " + customerId + " transaction amnt " + amount);
+                executorService.execute(() -> {
+                    //System.out.println("Updating customer credit with pessimistic lock...");
+                    creditUpdateService.performCreditUpdateWithPessimisticLock(customerId, amount);
 
-            executorService.execute(() -> {
-                //System.out.println("Updating customer credit with pessimistic lock...");
-                creditUpdateService.performCreditUpdateWithPessimisticLock(customerId, amount);
+                    //System.out.println("Updating customer credit with optimistic lock...");
+                    creditUpdateService.performCreditUpdateWithOptimisticLock(customerId, amount);
+                });
+            }
 
-                //System.out.println("Updating customer credit with optimistic lock...");
-                creditUpdateService.performCreditUpdateWithOptimisticLock(customerId, amount);
-            });
+            executorService.shutdown();
+            executorService.awaitTermination(5, TimeUnit.MINUTES);
+
         }
-
-        executorService.shutdown();
-        executorService.awaitTermination(5, TimeUnit.MINUTES);
-
-
     }
 }

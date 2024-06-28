@@ -13,6 +13,9 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
+    @Query("SELECT c FROM Customer c WHERE c.id = :customerId")
+    Optional<Customer> readById(@Param("customerId") Long customerId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT c FROM Customer c WHERE c.id = :customerId")
     Optional<Customer> findByIdForUpdate(@Param("customerId") Long customerId);

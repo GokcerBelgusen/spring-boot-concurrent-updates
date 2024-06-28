@@ -18,8 +18,14 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    // Pessimistic Locking Method
 
+    @Transactional
+    public Customer readCustomerCreditLimit(Long customerId) {
+        Optional<Customer> customerOpt = customerRepository.readById(customerId);
+        return customerOpt.get();
+    }
+
+    // Pessimistic Locking Method
     @Transactional
     public void updateCustomerCreditPessimistic(Long customerId, double amount) {
         Optional<Customer> customerOpt = customerRepository.findByIdForUpdate(customerId);
@@ -32,6 +38,7 @@ public class CustomerService {
             throw new RuntimeException("Customer not found");
         }
     }
+
     @Transactional
     public void updateCustomerCreditOptimistic(Long customerId, double amount) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
