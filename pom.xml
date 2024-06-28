@@ -26,7 +26,6 @@
         <relativePath/> <!-- lookup parent from io.repository -->
     </parent>
 
-
     <dependencies>
         <!-- Spring Boot Starter Data JPA -->
         <dependency>
@@ -41,7 +40,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.3.1</version> <!-- Replace with the latest version -->
         </dependency>
-
 
         <!-- Spring Boot Starter Web -->
         <dependency>
