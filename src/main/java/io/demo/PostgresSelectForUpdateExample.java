@@ -32,7 +32,7 @@ public class PostgresSelectForUpdateExample {
         Thread.sleep(5000); // Simulate processing time
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            //conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
             // Start transaction
             conn.setAutoCommit(false);
@@ -82,7 +82,7 @@ public class PostgresSelectForUpdateExample {
 
             // Start transaction
             conn.setAutoCommit(false);
-            //conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
 
             // Execute SELECT ... FOR UPDATE query
             String sql = "SELECT * FROM customer WHERE id = ? FOR UPDATE";
