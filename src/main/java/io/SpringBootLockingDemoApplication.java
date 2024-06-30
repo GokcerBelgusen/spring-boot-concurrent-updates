@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SpringBootLockingDemoApplication implements CommandLineRunner {
 
-    static boolean  debug = false;
+    static boolean  debug = true;
     @Autowired
     private CreditUpdateService creditUpdateService;
 
@@ -40,7 +40,7 @@ public class SpringBootLockingDemoApplication implements CommandLineRunner {
         if (random.nextBoolean()) {
             amount = -amount;
         }
-        return amount;
+        return -10;
     }
 
     @Override
@@ -48,11 +48,11 @@ public class SpringBootLockingDemoApplication implements CommandLineRunner {
 
 
         if (debug) {
-            int threadCount = 10; // Number of concurrent threads
+            int threadCount = 1000; // Number of concurrent threads
             ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
 
             for (int i = 0; i < threadCount; i++) {
-                Long customerId = (long) (Math.random() < 0.5 ? 1L : 2L);
+                Long customerId = 1L; //(long) (Math.random() < 0.5 ? 1L : 2L);
                 // Generate a random number between 5 and 100, multiples of 5, that can be positive or negative
                 double amount = generateRandomAmount();
 
@@ -63,7 +63,7 @@ public class SpringBootLockingDemoApplication implements CommandLineRunner {
                     creditUpdateService.performCreditUpdateWithPessimisticLock(customerId, amount);
 
                     //System.out.println("Updating customer credit with optimistic lock...");
-                    creditUpdateService.performCreditUpdateWithOptimisticLock(customerId, amount);
+                    //creditUpdateService.performCreditUpdateWithOptimisticLock(customerId, amount);
                 });
             }
 

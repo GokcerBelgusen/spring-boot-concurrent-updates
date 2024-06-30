@@ -64,6 +64,33 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-essentials-all</artifactId>
+            <version>3.6.4</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.atomikos/transactions -->
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
+
+        <!-- Atomikos Transactions JTA -->
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-jta</artifactId>
+            <version>5.0.8</version> <!-- Check the latest stable version -->
+        </dependency>
+
+
+
+
+
     </dependencies>
 
     <build>
